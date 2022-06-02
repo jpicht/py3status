@@ -68,6 +68,7 @@ echo '{testdata}'
 
 """
 
+
 class Py3status:
     """
     """
@@ -152,9 +153,10 @@ if __name__ == "__main__":
     from sys import argv
 
     if "--i3bar" in argv:
-        argv = [ arg for arg in argv if arg != "--i3bar" ]
+        argv = [arg for arg in argv if arg != "--i3bar"]
 
         import tempfile
+
         class deleter:
             def __enter__(self):
                 self._f = tempfile.NamedTemporaryFile(suffix=".sh", delete=False)
@@ -167,15 +169,17 @@ if __name__ == "__main__":
                 unlink(self._f.name)
 
         with deleter() as script:
-            script.write(STRING_TEST_SCRIPT.format_map(dict(
-                testdata=json.dumps(dict(
-                    name="test",
-                    full_text="content",
-                    color="#ffd200",
-                ))
-            )).encode())
+            script.write(
+                STRING_TEST_SCRIPT.format_map(
+                    dict(
+                        testdata=json.dumps(
+                            dict(name="test", full_text="content", color="#ffd200")
+                        )
+                    )
+                ).encode()
+            )
             script.close()
-            chmod(script.name, 0x1ff)
+            chmod(script.name, 0x1FF)
 
             config = {
                 "input_format": "i3bar",
