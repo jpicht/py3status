@@ -73,15 +73,16 @@ class Py3status:
             self.output = self.py3.command_output(
                 self.script_path, shell=True, localized=self.localize
             )
-            output_lines = self.output.splitlines()
-            if len(output_lines) > 1:
-                output_color = output_lines[1]
-                if re.search(r"^#[0-9a-fA-F]{6}$", output_color):
-                    response["color"] = output_color
         except self.py3.CommandError as e:
             # something went wrong show error to user
             output = e.output or e.error
             self.py3.error(output)
+
+        output_lines = self.output.splitlines()
+        if len(output_lines) > 1:
+            output_color = output_lines[1]
+            if re.search(r"^#[0-9a-fA-F]{6}$", output_color):
+                response["color"] = output_color
 
         if output_lines:
             output = output_lines[0]
