@@ -1,5 +1,5 @@
 """
-Display output of a given script.
+Display output of a given shell command.
 
 Display output of any executable script set by `script_path`. Only the first
 two lines of output will be used. The first line is used as the displayed
