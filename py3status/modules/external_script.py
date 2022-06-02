@@ -149,5 +149,44 @@ if __name__ == "__main__":
     Run module in test mode.
     """
     from py3status.module_test import module_test
+    from sys import argv
 
-    module_test(Py3status)
+    if "--i3bar" in argv:
+        argv = [ arg for arg in argv if arg != "--i3bar" ]
+
+        import tempfile
+        class deleter:
+            def __enter__(self):
+                self._f = tempfile.NamedTemporaryFile(suffix=".sh", delete=False)
+                return self._f
+
+            def __exit__(self, exc, value, tb):
+                if not self._f.closed:
+                    self._f.close()
+
+                unlink(self._f.name)
+
+        with deleter() as script:
+            script.write(STRING_TEST_SCRIPT.format_map(dict(
+                testdata=json.dumps(dict(
+                    name="test",
+                    full_text="content",
+                    color="#ffd200",
+                ))
+            )).encode())
+            script.close()
+            chmod(script.name, 0x1ff)
+
+            config = {
+                "input_format": "i3bar",
+                "script_path": script.name,
+            }
+
+            module_test(Py3status, config)
+
+    else:
+        config = {
+            "script_path": "/usr/bin/whoami",
+        }
+
+        module_test(Py3status, config)
